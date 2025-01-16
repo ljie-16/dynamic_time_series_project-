@@ -20,7 +20,7 @@ Below is the architecture diagram for the project:
 
 ## **Features**
 - **LSTM Autoencoder:** Captures sequential dependencies in time-series data and extracts meaningful latent features.
-- **Data Augmentation and Resampling:** Handles class imbalances using **SMOTE** and bootstrapping techniques.
+- **Data Augmentation and Resampling:** Uses Moving Block Bootstrapping (MBB) to generate synthetic samples while preserving temporal structure in time-series data. This balances class distributions and enhances model performance for imbalanced datasets.
 - **Ridge Regression:** Predicts and labels time-series windows based on extracted features.
 - **CNN Classification:** Classifies augmented time-series data into different categories.
 - **Evaluation and Visualization:**
