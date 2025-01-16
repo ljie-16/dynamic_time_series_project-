@@ -26,3 +26,6 @@ plot_model_results(ridge, X_train, X_test, y_train, y_test, plot_intervals=True,
 
 # Plot coefficients
 plot_coefficients(ridge, feature_names=X.columns)
+
+# ROC Curve
+plot_roc_curve(cnn_model, X_test, Y_test, nb_classes=Y_test.shape[1])
