@@ -14,8 +14,7 @@ It is designed for time-series datasets, enabling anomaly detection, prediction,
 ## **System Architecture**
 
 Below is the architecture diagram for the project:
-
-![System Architecture](./Solution.png)
+![System Architecture](Solution.png)
 
 ---
 
