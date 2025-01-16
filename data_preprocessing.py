@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
+from bootstrapping import BootstrappingWrapper
+from smoothers import SpectralSmoother  # Assuming these are part of your custom implementation
 
 def load_and_preprocess_data(file_path):
     """
@@ -22,16 +22,49 @@ def load_and_preprocess_data(file_path):
     
     return X_scaled, y
 
-def augment_and_resample(X, y):
+def augment_with_mbb(X, y, block_length=24, n_samples=100, seed=33):
     """
-    Augments and resamples the data using SMOTE and under-sampling.
-    """
-    # Augment using SMOTE
-    smote = SMOTE()
-    X_resampled, y_resampled = smote.fit_resample(X, y)
-
-    # Under-sample to balance classes
-    undersampler = RandomUnderSampler()
-    X_resampled, y_resampled = undersampler.fit_resample(X_resampled, y_resampled)
+    Augments the data using Moving Block Bootstrapping (MBB).
     
-    return X_resampled, y_resampled
+    Parameters:
+    - X: Feature data (scaled).
+    - y: Target labels.
+    - block_length: Length of the blocks for bootstrapping.
+    - n_samples: Number of bootstrap samples to generate.
+    - seed: Random seed for reproducibility.
+    
+    Returns:
+    - X_augmented: Augmented feature data.
+    - y_augmented: Corresponding augmented labels.
+    """
+    np.random.seed(seed)
+    X_augmented = []
+    y_augmented = []
+    
+    # Loop through each column for augmentation
+    for i in range(X.shape[1]):
+        smoother = SpectralSmoother(smooth_fraction=0.18, pad_len=12)
+        bts = BootstrappingWrapper(smoother, bootstrap_type='mbb', block_length=block_length)
+        bts_samples = bts.sample(X[:, i], n_samples=n_samples)
+        
+        # Flatten and append bootstrap samples
+        for sample in bts_samples:
+            X_augmented.append(sample)
+            y_augmented.append(y)
+    
+    X_augmented = np.array(X_augmented)
+    y_augmented = np.array(y_augmented)
+    
+    return X_augmented, y_augmented
+
+def preprocess_and_augment(file_path):
+    """
+    Full pipeline for preprocessing and augmenting the data.
+    """
+    # Load and preprocess
+    X, y = load_and_preprocess_data(file_path)
+    
+    # Augment using MBB
+    X_augmented, y_augmented = augment_with_mbb(X, y)
+    
+    return X_augmented, y_augmented
