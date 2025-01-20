@@ -1,4 +1,4 @@
-# **Dynamic Time Series Modeling with AI-Assisted Data Labeling**
+# **An AI-Driven Approach to Industrial Testing: From Time Series to Supervised Classification through Dynamic Thresholds**
 
 ### **Project Description**
 This project implements a **dynamic time series modeling pipeline** using a combination of:
